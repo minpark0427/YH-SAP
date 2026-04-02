@@ -1,0 +1,1517 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Clinical trial protocol → SAP auto-generation pipeline using LLM">
+      
+      
+      
+        <link rel="canonical" href="https://minpark0427.github.io/YH-SAP/validation-report/">
+      
+      
+        <link rel="prev" href="../gap-analysis/">
+      
+      
+        <link rel="next" href="../tags/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>검증 보고서 - YH-SAP</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#yh-sap" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href=".." title="YH-SAP" class="md-header__button md-logo" aria-label="YH-SAP" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            YH-SAP
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              검증 보고서
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="다크 모드"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="다크 모드" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="라이트 모드"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="라이트 모드" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="공유" aria-label="공유" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/minpark0427/YH-SAP" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    minpark0427/YH-SAP
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="YH-SAP" class="md-nav__button md-logo" aria-label="YH-SAP" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    YH-SAP
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/minpark0427/YH-SAP" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    minpark0427/YH-SAP
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    홈
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    시작하기
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    시작하기
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    설치 가이드
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../claude-code-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Code 가이드
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    문서
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    문서
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture-evolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    아키텍처 발전 과정
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gap-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GAP 분석
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    검증 보고서
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    검증 보고서
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 검증 목적
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 검증 기준 (9항목)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 검증 결과
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 검증 결과">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 1차 실행 (재시도 로직 없음)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 개선 조치
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 2차 실행 (재시도 로직 적용 후)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 결과 분석
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 결과 분석">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 안정성
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 실행 시간
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 콘텐츠 변동성
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 프로토콜 테이블 삽입
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 파이프라인 사양 요약
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 알려진 제한사항
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 결론
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    참고
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    참고
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SAP 46개 태그
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 검증 목적
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 검증 기준 (9항목)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 검증 결과
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 검증 결과">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 1차 실행 (재시도 로직 없음)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 개선 조치
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 2차 실행 (재시도 로직 적용 후)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 결과 분석
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 결과 분석">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 안정성
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 실행 시간
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 콘텐츠 변동성
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 프로토콜 테이블 삽입
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 파이프라인 사양 요약
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. 알려진 제한사항
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. 결론
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="yh-sap">YH-SAP 파이프라인 검증 보고서<a class="headerlink" href="#yh-sap" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>프로토콜: YH00000-101 (Phase 1, SAD/MAD, 건강한 성인 남성)
+실행 일자: 2026-04-02
+모델: claude-haiku-4-5-20251001 (테스트 모드)</p>
+</blockquote>
+<hr />
+<h2 id="1">1. 검증 목적<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<p>YH-SAP 파이프라인이 프로토콜 DOCX를 입력받아 SAP DOCX를 안정적으로 생성하는지 확인한다.
+안정성을 위해 동일 프로토콜로 5회 반복 실행하고, 매 실행마다 9개 검증 기준을 적용한다.</p>
+<hr />
+<h2 id="2-9">2. 검증 기준 (9항목)<a class="headerlink" href="#2-9" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>기준</th>
+<th>설명</th>
+<th>합격 조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>tags_46</td>
+<td>46개 SAP 태그 전부 content.txt에 존재</td>
+<td>누락 0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>errors_0</td>
+<td>LLM 호출 실패(ERROR) 없음</td>
+<td>ERROR 0건</td>
+</tr>
+<tr>
+<td>3</td>
+<td>no_instruction</td>
+<td>양식 Instruction 박스(회색 테이블) 제거</td>
+<td>0개</td>
+</tr>
+<tr>
+<td>4</td>
+<td>no_markdown</td>
+<td>docx 본문에 #, ** 등 마크다운 문법 없음</td>
+<td>0건</td>
+</tr>
+<tr>
+<td>5</td>
+<td>no_blue</td>
+<td>docx에 파란색(예시) 텍스트 잔여 없음</td>
+<td>0건</td>
+</tr>
+<tr>
+<td>6</td>
+<td>has_tables</td>
+<td>프로토콜 테이블이 SAP에 삽입됨</td>
+<td>5개 초과</td>
+</tr>
+<tr>
+<td>7</td>
+<td>docx_valid</td>
+<td>출력 docx 파일 정상 (100KB 초과)</td>
+<td>true</td>
+</tr>
+<tr>
+<td>8</td>
+<td>has_yellow</td>
+<td>프로토콜 미충족 섹션에 노란 하이라이트</td>
+<td>1개 이상</td>
+</tr>
+<tr>
+<td>9</td>
+<td>has_skips</td>
+<td>[SKIP: 사유] 마커로 정직한 갭 표시</td>
+<td>1개 이상</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3">3. 검증 결과<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
+<h3 id="31-1">3.1 1차 실행 (재시도 로직 없음)<a class="headerlink" href="#31-1" title="Permanent link">&para;</a></h3>
+<p>재시도 로직 추가 전 5회 실행 결과:</p>
+<table>
+<thead>
+<tr>
+<th>Run</th>
+<th>상태</th>
+<th>시간</th>
+<th>Paragraphs</th>
+<th>Tables</th>
+<th>DOCX</th>
+<th>SKIP</th>
+<th>Yellow</th>
+<th>실패 항목</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>PASS</td>
+<td>229s</td>
+<td>339</td>
+<td>19</td>
+<td>385KB</td>
+<td>20</td>
+<td>13</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PASS</td>
+<td>84s</td>
+<td>402</td>
+<td>19</td>
+<td>386KB</td>
+<td>28</td>
+<td>15</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3</td>
+<td>PASS</td>
+<td>76s</td>
+<td>379</td>
+<td>19</td>
+<td>385KB</td>
+<td>26</td>
+<td>18</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>FAIL</strong></td>
+<td>84s</td>
+<td>376</td>
+<td>19</td>
+<td>386KB</td>
+<td>21</td>
+<td>16</td>
+<td>errors_0</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>FAIL</strong></td>
+<td>78s</td>
+<td>370</td>
+<td>19</td>
+<td>385KB</td>
+<td>23</td>
+<td>18</td>
+<td>errors_0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>결과: 3/5 통과</strong></p>
+<p><strong>실패 원인 분석:</strong>
+- Run 4: <code>secondary_efficacy</code> 태그에서 claude CLI가 빈 응답 반환 → "ERROR"로 처리됨
+- Run 5: <code>vital_signs</code> 태그에서 동일 현상</p>
+<p><strong>근본 원인:</strong> <code>ClaudeCodeChatAsync.get_response()</code>에 재시도 로직이 없어서, CLI의 간헐적 빈 응답이 즉시 ERROR로 확정됨. 네트워크 일시 지연 또는 CLI 프로세스 간 경합이 원인으로 추정.</p>
+<h3 id="32">3.2 개선 조치<a class="headerlink" href="#32" title="Permanent link">&para;</a></h3>
+<p><code>ClaudeCodeChatAsync.get_response()</code>에 재시도 로직 추가:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_retries</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">_run</span><span class="p">)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">max_retries</span><span class="p">:</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Retry </span><span class="si">{</span><span class="n">attempt</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                <span class="k">continue</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()}</span>
+</code></pre></div>
+<ul>
+<li>빈 응답 또는 CLI 에러 시 최대 2회 재시도 (2초 간격)</li>
+<li>3번째 시도까지 실패하면 그때 ERROR 확정</li>
+</ul>
+<h3 id="33-2">3.3 2차 실행 (재시도 로직 적용 후)<a class="headerlink" href="#33-2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Run</th>
+<th>상태</th>
+<th>시간</th>
+<th>Paragraphs</th>
+<th>Tables</th>
+<th>DOCX</th>
+<th>SKIP</th>
+<th>Yellow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>PASS</strong></td>
+<td>84s</td>
+<td>359</td>
+<td>19</td>
+<td>384KB</td>
+<td>21</td>
+<td>15</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>PASS</strong></td>
+<td>69s</td>
+<td>348</td>
+<td>19</td>
+<td>385KB</td>
+<td>25</td>
+<td>18</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>PASS</strong></td>
+<td>79s</td>
+<td>334</td>
+<td>19</td>
+<td>384KB</td>
+<td>21</td>
+<td>15</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>PASS</strong></td>
+<td>86s</td>
+<td>381</td>
+<td>19</td>
+<td>385KB</td>
+<td>22</td>
+<td>16</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>PASS</strong></td>
+<td>78s</td>
+<td>385</td>
+<td>19</td>
+<td>386KB</td>
+<td>28</td>
+<td>21</td>
+</tr>
+</tbody>
+</table>
+<p><strong>결과: 5/5 통과 (45/45 개별 기준 ALL PASS)</strong></p>
+<hr />
+<h2 id="4">4. 결과 분석<a class="headerlink" href="#4" title="Permanent link">&para;</a></h2>
+<h3 id="41">4.1 안정성<a class="headerlink" href="#41" title="Permanent link">&para;</a></h3>
+<ul>
+<li>5회 모두 ALL_PASS: 재시도 로직 추가 후 간헐적 실패 완전 해소</li>
+<li>DOCX 크기 일관적: 384-386KB (±0.3%)</li>
+<li>테이블 수 일관적: 19개 (모든 run 동일)</li>
+</ul>
+<h3 id="42">4.2 실행 시간<a class="headerlink" href="#42" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>통계</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>평균</td>
+<td>79.2초</td>
+</tr>
+<tr>
+<td>최소</td>
+<td>69초</td>
+</tr>
+<tr>
+<td>최대</td>
+<td>86초</td>
+</tr>
+<tr>
+<td>표준편차</td>
+<td>6.1초</td>
+</tr>
+</tbody>
+</table>
+<p>haiku(테스트 모델) 기준. Production(sonnet-4-6)은 2-3배 소요 예상.</p>
+<h3 id="43">4.3 콘텐츠 변동성<a class="headerlink" href="#43" title="Permanent link">&para;</a></h3>
+<p>LLM 특성상 매 실행마다 출력이 다르지만, 구조적 품질은 일관적:</p>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>최소</th>
+<th>최대</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paragraphs</td>
+<td>334</td>
+<td>385</td>
+<td>본문 분량 변동 ±7%</td>
+</tr>
+<tr>
+<td>SKIP markers</td>
+<td>21</td>
+<td>28</td>
+<td>프로토콜 미충족 탐지 ±15%</td>
+</tr>
+<tr>
+<td>Yellow highlights</td>
+<td>15</td>
+<td>21</td>
+<td>SKIP의 docx 렌더링</td>
+</tr>
+</tbody>
+</table>
+<p>SKIP 수 변동은 LLM이 "프로토콜에 충분한 정보가 없다"를 판단하는 기준이 실행마다 약간 다르기 때문. 이는 LLM의 본질적 비결정성이므로 정상 범위.</p>
+<h3 id="44">4.4 프로토콜 테이블 삽입<a class="headerlink" href="#44" title="Permanent link">&para;</a></h3>
+<p>모든 run에서 19개 테이블 일관 삽입:
+- 프로토콜에서 추출: 12개 (Objectives 4, SoA 3, Design 1, IP 1, PK 1, Lab 1, Abbrev 1)
+- 양식 기존 테이블: 7개 (Cover, Signature, Document History 등)
+- Instruction 박스: 37개 → 0개 (전부 제거)</p>
+<hr />
+<h2 id="5">5. 파이프라인 사양 요약<a class="headerlink" href="#5" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SAP 태그</td>
+<td>46개</td>
+</tr>
+<tr>
+<td>프로토콜 섹셔닝</td>
+<td>126개 섹션 (heading 기반)</td>
+</tr>
+<tr>
+<td>컨텍스트 축소</td>
+<td>88% (평균 13.6K/호출 vs 111K 전체)</td>
+</tr>
+<tr>
+<td>프로토콜 테이블 추출</td>
+<td>12개 (7종류)</td>
+</tr>
+<tr>
+<td>출력 포맷</td>
+<td>JSON → python-docx (paragraph 단위 렌더링)</td>
+</tr>
+<tr>
+<td>서식 처리</td>
+<td>파란색→검정, Instruction 제거, SKIP→노란하이라이트</td>
+</tr>
+<tr>
+<td>재시도</td>
+<td>max_retries=2 (빈 응답/CLI 에러)</td>
+</tr>
+<tr>
+<td>High-complexity</td>
+<td>2단계 생성 (primary_efficacy, secondary_efficacy, sample_size)</td>
+</tr>
+<tr>
+<td>기본 모델</td>
+<td>claude-sonnet-4-6 (테스트: haiku-4-5)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6">6. 알려진 제한사항<a class="headerlink" href="#6" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p><strong>SKIP 마커 비결정성</strong>: 동일 프로토콜이라도 실행마다 SKIP 수가 21-28개로 변동. LLM이 "정보 부족" 판단을 매번 약간 다르게 함.</p>
+</li>
+<li>
+<p><strong>프로토콜 구조 의존</strong>: ProtocolSegmenter는 <code>번호.\t제목</code> 패턴의 heading을 가정. 비표준 구조의 프로토콜에서는 섹셔닝 품질이 저하될 수 있으며, 이 경우 full-protocol fallback이 동작.</p>
+</li>
+<li>
+<p><strong>테이블 렌더링 제한</strong>: 프로토콜의 merged cell/nested table은 단순 cell-by-cell로 추출되어 일부 중복 텍스트가 발생할 수 있음 (기능에는 영향 없음).</p>
+</li>
+<li>
+<p><strong>Jinja2 템플릿 태그 부족</strong>: 신규 추가된 10개 태그(Phase 4-5)는 docx 템플릿에 <code>{{ tag }}</code> 위치가 없어 B안(JSON renderer)으로만 삽입 가능. A안(docxtpl)에서는 content.txt에만 존재.</p>
+</li>
+<li>
+<p><strong>PDF 프로토콜</strong>: 테이블 추출 기능은 DOCX 전용. PDF 프로토콜은 텍스트만으로 생성 (테이블 미삽입).</p>
+</li>
+</ol>
+<hr />
+<h2 id="7">7. 결론<a class="headerlink" href="#7" title="Permanent link">&para;</a></h2>
+<p>YH-SAP 파이프라인은 YH00000-101 프로토콜 기준으로 <strong>5회 연속 반복 실행에서 100% 안정성</strong>을 확인했다. 9개 검증 기준 × 5회 = 45/45 ALL PASS.</p>
+<p>간헐적 LLM 빈 응답 문제는 재시도 로직(max_retries=2)으로 해결되었으며, 평균 79초(haiku) 내에 46개 섹션 + 12개 프로토콜 테이블을 포함한 SAP DOCX를 생성한다.</p>
+<p>Production 배포 시에는 기본 모델을 claude-sonnet-4-6으로 사용하고, 최종 제출용에는 claude-opus-4-6 사용을 권장한다.</p>
+<hr />
+<p><em>작성: YH-SAP 자동 검증 시스템 | 검증 스크립트: scripts/run_validation_5x.py</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  맨위로
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
