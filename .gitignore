@@ -47,3 +47,4 @@ sap-kcl/SAPs_verify/
 
 # Validation reports (contain protocol-specific data)
 *validation_report*
+site/

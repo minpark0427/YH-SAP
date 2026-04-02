@@ -1,0 +1,64 @@
+site_name: YH-SAP
+site_url: https://minpark0427.github.io/YH-SAP/
+site_description: Clinical trial protocol → SAP auto-generation pipeline using LLM
+repo_url: https://github.com/minpark0427/YH-SAP
+repo_name: minpark0427/YH-SAP
+
+theme:
+  name: material
+  language: ko
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 다크 모드
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 라이트 모드
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+
+plugins:
+  - search:
+      lang: 
+        - ko
+        - en
+
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - 홈: index.md
+  - 시작하기:
+    - 설치 가이드: getting-started.md
+    - Claude Code 가이드: claude-code-guide.md
+  - 문서:
+    - 아키텍처 발전 과정: architecture-evolution.md
+    - GAP 분석: gap-analysis.md
+    - 검증 보고서: validation-report.md
+  - 참고:
+    - SAP 46개 태그: tags.md
