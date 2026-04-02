@@ -352,4 +352,4 @@ YH-SAP/
 
 ## 라이선스
 
-이 프로젝트는 sap-kcl 오픈소스를 기반으로 하며, 유한양행 내부 사용을 위해 개발되었습니다.
+이 프로젝트는 [sap-kcl](https://github.com/rct-sap-ai/sap-kcl) 오픈소스를 기반으로 합니다.
