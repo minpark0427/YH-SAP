@@ -20,6 +20,7 @@ from auto_sap.classes.context_assembler import ContextAssembler
 from auto_sap.classes.multi_step_generator import MultiStepGenerator, HIGH_COMPLEXITY_TAGS
 from auto_sap.classes.chat_classes import ClaudeCodeChatAsync
 from auto_sap.classes.json_renderer import JsonSapRenderer
+from auto_sap.classes.table_extractor import ProtocolTableExtractor
 from auto_sap.section_mapping import SAP_TO_PROTOCOL_MAP, GLOBAL_CONTEXT_SECTIONS
 from auto_sap.generate_templates.generate_yuhan_template import prompt_tasks
 from auto_sap.prompts.prompts_yuhan_v1 import PROMPTS_DICTIONARY
@@ -147,11 +148,21 @@ def main():
             f.write(f"{key}: {value}\n")
     print(f"Raw content saved to {content_path}")
 
+    # Extract protocol tables (for DOCX protocols)
+    protocol_tables = None
+    if protocol_path.suffix.lower() == ".docx":
+        try:
+            extractor = ProtocolTableExtractor(str(protocol_path))
+            protocol_tables = extractor.extract_all()
+            print(extractor.summary())
+        except Exception as e:
+            print(f"Warning: Could not extract protocol tables: {e}")
+
     # Render docx with JsonSapRenderer
     template_path = files("auto_sap").joinpath("templates/yuhan_sap_template_v1.0.docx")
     renderer = JsonSapRenderer(template_path)
     docx_path = output_dir / f"{sap_name}.docx"
-    renderer.render(sap_content, docx_path)
+    renderer.render(sap_content, docx_path, protocol_tables=protocol_tables)
 
     t1 = time.time()
     print(f"SAP written in {round(t1 - t0)} seconds")

@@ -19,6 +19,7 @@ Styles:
   "body" → Normal paragraph
   "bullet" → List Paragraph / bullet
   "bold" → Bold paragraph (for sub-labels within a section)
+  "table" → Table (with "headers" and "rows" fields instead of "text")
 """
 
 import json
@@ -26,8 +27,9 @@ import re
 import copy
 from pathlib import Path
 from docx import Document
-from docx.shared import Pt, RGBColor
+from docx.shared import Pt, Inches, RGBColor
 from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
 
 def parse_llm_json(text: str) -> list[dict]:
@@ -92,12 +94,15 @@ class JsonSapRenderer:
         """Initialize with the Yuhan template docx as base."""
         self.template_path = Path(template_path)
 
-    def render(self, sap_content: dict[str, str], output_path: str | Path) -> None:
+    def render(self, sap_content: dict[str, str], output_path: str | Path,
+               protocol_tables: dict[str, list[dict]] | None = None) -> None:
         """Render all SAP sections into the template docx.
 
         Args:
             sap_content: dict of tag → LLM response (JSON string or plain text)
             output_path: where to save the rendered docx
+            protocol_tables: optional dict from ProtocolTableExtractor.extract_all()
+                           Tables are injected into relevant SAP sections.
         """
         doc = Document(str(self.template_path))
 
@@ -112,6 +117,10 @@ class JsonSapRenderer:
                     tag = match.group(1)
                     if tag in sap_content:
                         paragraphs_to_process.append((i, p, tag))
+
+        # Inject protocol tables into relevant SAP sections
+        if protocol_tables:
+            sap_content = self._inject_protocol_tables(sap_content, protocol_tables)
 
         # Process in reverse to preserve indices
         for i, para, tag in reversed(paragraphs_to_process):
@@ -150,70 +159,61 @@ class JsonSapRenderer:
         print(f"SAP saved to {output_path}")
 
     def _replace_paragraph_with_content(self, doc, placeholder_para, content_items: list[dict]):
-        """Replace a placeholder paragraph with formatted content paragraphs."""
-        # Get the parent element and position
+        """Replace a placeholder paragraph with formatted content paragraphs and tables."""
         parent = placeholder_para._element.getparent()
         placeholder_elem = placeholder_para._element
 
-        # Get reference style from the placeholder paragraph
-        base_style = placeholder_para.style
-
-        # Insert new paragraphs after the placeholder
         last_elem = placeholder_elem
         for item in content_items:
-            text = item.get("text", "").strip()
             style = item.get("style", "body")
+
+            # Handle table items
+            if style == "table":
+                headers = item.get("headers", [])
+                rows = item.get("rows", [])
+                caption = item.get("caption", "")
+                if headers or rows:
+                    tbl_elem = self._create_table_element(headers, rows, caption)
+                    last_elem.addnext(tbl_elem)
+                    last_elem = tbl_elem
+                continue
+
+            text = item.get("text", "").strip()
             if not text:
                 continue
 
-            # Create new paragraph element
             new_p = copy.deepcopy(placeholder_elem)
-            # Clear all runs
             for r in new_p.findall(qn('w:r')):
                 new_p.remove(r)
-            # Clear any existing text
             for child in list(new_p):
                 if child.tag == qn('w:r'):
                     new_p.remove(child)
 
-            # Set style
             pPr = new_p.find(qn('w:pPr'))
             if pPr is None:
-                from docx.oxml import OxmlElement
                 pPr = OxmlElement('w:pPr')
                 new_p.insert(0, pPr)
 
-            # Apply style based on type
             if style == "bullet":
-                # Use list paragraph style if available
                 pStyle = pPr.find(qn('w:pStyle'))
                 if pStyle is None:
-                    from docx.oxml import OxmlElement
                     pStyle = OxmlElement('w:pStyle')
                     pPr.append(pStyle)
                 pStyle.set(qn('w:val'), 'ListParagraph')
             else:
-                # Use Normal style
                 pStyle = pPr.find(qn('w:pStyle'))
                 if pStyle is not None:
                     pPr.remove(pStyle)
 
-            # Add text run
-            from docx.oxml import OxmlElement
             new_r = OxmlElement('w:r')
-
-            # Set font properties
             rPr = OxmlElement('w:rPr')
             if style == "bold":
-                b_elem = OxmlElement('w:b')
-                rPr.append(b_elem)
+                rPr.append(OxmlElement('w:b'))
 
-            # Set font to match template (typically 10pt, Times New Roman or similar)
             sz = OxmlElement('w:sz')
-            sz.set(qn('w:val'), '20')  # 10pt = 20 half-points
+            sz.set(qn('w:val'), '18')  # 9pt for body text
             rPr.append(sz)
 
-            # Ensure black color
             color = OxmlElement('w:color')
             color.set(qn('w:val'), '000000')
             rPr.append(color)
@@ -226,12 +226,126 @@ class JsonSapRenderer:
             new_r.append(new_t)
             new_p.append(new_r)
 
-            # Insert after the last element
             last_elem.addnext(new_p)
             last_elem = new_p
 
-        # Remove the original placeholder paragraph
         parent.remove(placeholder_elem)
+
+    def _create_table_element(self, headers: list[str], rows: list[list[str]], caption: str = "") -> OxmlElement:
+        """Create a docx table XML element from headers and rows."""
+        all_rows = [headers] + rows if headers else rows
+        if not all_rows:
+            return OxmlElement('w:p')
+
+        n_cols = max(len(r) for r in all_rows)
+
+        tbl = OxmlElement('w:tbl')
+
+        # Table properties
+        tblPr = OxmlElement('w:tblPr')
+        tblStyle = OxmlElement('w:tblStyle')
+        tblStyle.set(qn('w:val'), 'TableGrid')
+        tblPr.append(tblStyle)
+        tblW = OxmlElement('w:tblW')
+        tblW.set(qn('w:w'), '0')
+        tblW.set(qn('w:type'), 'auto')
+        tblPr.append(tblW)
+        # Add borders
+        tblBorders = OxmlElement('w:tblBorders')
+        for border_name in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']:
+            border = OxmlElement(f'w:{border_name}')
+            border.set(qn('w:val'), 'single')
+            border.set(qn('w:sz'), '4')
+            border.set(qn('w:space'), '0')
+            border.set(qn('w:color'), '000000')
+            tblBorders.append(border)
+        tblPr.append(tblBorders)
+        tbl.append(tblPr)
+
+        # Table grid
+        tblGrid = OxmlElement('w:tblGrid')
+        for _ in range(n_cols):
+            gridCol = OxmlElement('w:gridCol')
+            gridCol.set(qn('w:w'), '1440')  # ~1 inch per column
+            tblGrid.append(gridCol)
+        tbl.append(tblGrid)
+
+        # Rows
+        for r_idx, row_data in enumerate(all_rows):
+            tr = OxmlElement('w:tr')
+            for c_idx in range(n_cols):
+                tc = OxmlElement('w:tc')
+                p = OxmlElement('w:p')
+                r = OxmlElement('w:r')
+                rPr = OxmlElement('w:rPr')
+
+                # Header row: bold + smaller font
+                sz = OxmlElement('w:sz')
+                if r_idx == 0 and headers:
+                    rPr.append(OxmlElement('w:b'))
+                    sz.set(qn('w:val'), '16')  # 8pt header
+                else:
+                    sz.set(qn('w:val'), '16')  # 8pt body
+                rPr.append(sz)
+                r.append(rPr)
+
+                t = OxmlElement('w:t')
+                t.text = row_data[c_idx] if c_idx < len(row_data) else ""
+                t.set(qn('xml:space'), 'preserve')
+                r.append(t)
+                p.append(r)
+                tc.append(p)
+                tr.append(tc)
+            tbl.append(tr)
+
+        return tbl
+
+    # Table-to-SAP tag mapping: which protocol tables go into which SAP sections
+    TABLE_TO_SAP_MAP = {
+        "objectives": ["objectives"],           # Objectives & Endpoints tables
+        "overall_design": ["introduction"],      # Overall design → introduction
+        "schedule_of_activities": ["visit_windows"],  # SoA → visit windows
+        "investigational_products": ["ip_exposure"],   # IP info → exposure section
+        "pk_parameters": ["primary_efficacy"],   # PK params → primary analysis
+        "lab_assessments": ["lab_parameters"],   # Lab tests → lab parameters
+    }
+
+    def _inject_protocol_tables(self, sap_content: dict[str, str],
+                                 protocol_tables: dict[str, list[dict]]) -> dict[str, str]:
+        """Inject protocol tables into SAP content as table items in JSON."""
+        sap_content = dict(sap_content)  # don't mutate original
+
+        for table_key, sap_tags in self.TABLE_TO_SAP_MAP.items():
+            tables = protocol_tables.get(table_key, [])
+            if not tables:
+                continue
+
+            for sap_tag in sap_tags:
+                if sap_tag not in sap_content:
+                    continue
+
+                # Parse existing content
+                existing = sap_content[sap_tag]
+                parsed = parse_llm_json(existing)
+
+                # Append protocol tables
+                for t in tables:
+                    # Add caption paragraph before table
+                    parsed.append({
+                        "text": f"[Protocol Table: {t['caption']}]",
+                        "style": "bold",
+                    })
+                    parsed.append({
+                        "style": "table",
+                        "headers": t["headers"],
+                        "rows": t["rows"],
+                        "caption": t["caption"],
+                    })
+
+                # Re-serialize
+                sap_content[sap_tag] = json.dumps({"paragraphs": parsed})
+
+        return sap_content
 
     def _fix_cover_page_colors(self, doc):
         """Remove blue color from cover page placeholder text."""
