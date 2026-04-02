@@ -14,8 +14,13 @@ YH-SAP/
 ├── Jafari 등 - 2026 - ...pdf          ← Reference paper (SAPAI pipeline)
 ├── SAP-AI 자동생성 프로그램 도입 계획서.md  ← Implementation plan
 ├── YH-SAP-venv/                       ← Python virtual environment
+├── DEVELOPMENT_ROADMAP.md             ← Phased improvement plan + verification findings
+├── reports/                           ← Verification reports output directory
 ├── scripts/
-│   └── create_yuhan_template.py       ← Script to generate tagged docx template
+│   ├── create_yuhan_template.py       ← Script to generate tagged docx template
+│   ├── verify_sap_quality.py          ← SAP quality verification (automated + LLM)
+│   ├── validate_sap.py                ← LLM-based checklist validation
+│   └── run_validation_5x.py           ← Multi-run consistency validation
 │
 └── sap-kcl/                           ← Open-source repo (upstream)
     ├── auto_sap/
@@ -77,18 +82,34 @@ YH-SAP/
 ## What Still Needs To Be Done
 
 ### 1. ~~End-to-end validation with a real protocol~~ ✅ Done
-- Validated with YH00000 protocol: 36/36 sections, 0 errors, 85s runtime
+- Validated with YH00000 protocol: 46/46 sections, 0 errors
 
-### 2. Prompt tuning
-- Evaluate generated SAP quality against existing completed SAPs
-- Tune prompts for sections with low accuracy (especially 9.1 Primary Efficacy)
-- Consider adding few-shot examples to statistical reasoning prompts
+### 2. ~~Verification process~~ ✅ Done
+- Created `scripts/verify_sap_quality.py` — automated + LLM-based quality verification
+- Compared AI SAP vs human-written SAP for YH00000-101
+- Findings: 28 [SKIP] markers (16 false), 104 table gap, specificity gaps
+- See `DEVELOPMENT_ROADMAP.md` for full analysis and improvement plan
 
-### 3. Optional enhancements
+### 3. Phase 1 — Protocol Extraction Accuracy (Current Priority)
+- Reduce false [SKIP] markers (16 sections where human SAP has content but AI skips)
+- Improve specificity: extract exact formulas, version numbers, BLQ handling rules
+- Better PK analysis detail (power model equation, food effect ANOVA)
+
+### 4. Phase 2 — Expert Judgment Layer (Next)
+- Generate standard FAS/PPS/baseline definitions using biostatistics conventions
+- Generate missing data imputation rules (SAP-standard defaults)
+- Generate protocol deviation classification framework
+- See `DEVELOPMENT_ROADMAP.md` Phase 2
+
+### 5. Phase 3 — Table Shell Generation (Future)
+- Generate ~70 output table templates (the #1 value-add of a human SAP)
+- Table shells for demographics, AE, PK, PD, labs, listings
+- See `DEVELOPMENT_ROADMAP.md` Phase 3
+
+### 6. Optional enhancements
 - Korean language support (bilingual SAP generation)
-- Table generation (Table shells are common in Yuhan SAPs)
 - Auto-code pipeline integration (R/SAS code generation from SAP)
-- ~~LLM provider flexibility~~ ✅ Done — 3 backends: `claudecode` (default, no API key), `anthropic`, `openai`
+- ~~LLM provider flexibility~~ ✅ Done — 3 backends
 - ~~Targeted-context generation~~ ✅ Done — 89% context reduction per LLM call
 
 ## Key Conventions
@@ -102,6 +123,9 @@ YH-SAP/
 - **Prompt keys** must be identical across: `PROMPTS_DICTIONARY`, `PromptRegister.variable`, and `{{ tags }}` in the docx
 - Template uses `docxtpl` (Jinja2 in docx), not `python-docx` directly
 - **Regenerate template**: `python scripts/create_yuhan_template.py` (reads original docx, inserts tags, saves to templates/)
+- **Verify SAP quality**: `python scripts/verify_sap_quality.py --ai-sap <content.txt> --human-sap <reference.docx> --output reports/report.md`
+  - Add `--skip-llm` for fast automated-only checks
+  - Add `--sections tag1 tag2` to evaluate specific sections only
 
 ## Yuhan SAP Template Tags (46 total)
 
