@@ -39,6 +39,8 @@ SBS02T01*.docx
 # All SAP generation outputs (test results)
 sap-kcl/SAPs/
 sap-kcl/SAPs_v*/
+sap-kcl/SAPs_run*/
+sap-kcl/SAPs_verify/
 
 # Sisyphus evidence (runtime artifacts)
 .sisyphus/evidence/

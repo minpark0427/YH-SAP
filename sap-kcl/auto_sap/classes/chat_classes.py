@@ -433,12 +433,12 @@ class ClaudeCodeChatAsync:
         self.system_message = system_message
         self.semaphore = asyncio.Semaphore(max_concurrent)
 
-    async def get_response(self, prompt: str, reasoning_effort="minimal", verbosity="low"):
+    async def get_response(self, prompt: str, reasoning_effort="minimal", verbosity="low",
+                           max_retries: int = 2):
         full_prompt = f"{self.system_message}\n\n{prompt}"
         loop = asyncio.get_event_loop()
 
         def _run():
-            # Pass prompt via stdin to avoid OS argument length limits on large protocols
             return subprocess.run(
                 ["claude", "--print", "-p", "-", "--model", self.model_name],
                 capture_output=True,
@@ -448,12 +448,33 @@ class ClaudeCodeChatAsync:
                 timeout=600,
             )
 
-        async with self.semaphore:
-            result = await loop.run_in_executor(None, _run)
+        last_error = None
+        for attempt in range(max_retries + 1):
+            try:
+                async with self.semaphore:
+                    result = await loop.run_in_executor(None, _run)
+                if result.returncode != 0:
+                    last_error = f"claude CLI error: {result.stderr[:200]}"
+                    if attempt < max_retries:
+                        print(f"  Retry {attempt+1}/{max_retries}: {last_error[:80]}")
+                        await asyncio.sleep(2)
+                        continue
+                    raise RuntimeError(last_error)
+                content = result.stdout.strip()
+                if not content and attempt < max_retries:
+                    print(f"  Retry {attempt+1}/{max_retries}: empty response")
+                    await asyncio.sleep(2)
+                    continue
+                return {"content": content}
+            except subprocess.TimeoutExpired:
+                last_error = "timeout"
+                if attempt < max_retries:
+                    print(f"  Retry {attempt+1}/{max_retries}: timeout")
+                    await asyncio.sleep(2)
+                    continue
+                raise
 
-        if result.returncode != 0:
-            raise RuntimeError(f"claude CLI error: {result.stderr}")
-        return {"content": result.stdout.strip()}
+        return {"content": ""}
 
     async def run_prompts_register(self, prompt_register, prompt_dictionary):
         print("running prompts async via claude CLI ⚡")
