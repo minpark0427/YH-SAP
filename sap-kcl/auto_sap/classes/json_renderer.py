@@ -162,7 +162,7 @@ class JsonSapRenderer:
                         )
 
         # Post-process
-        self._fix_cover_page_colors(doc)
+        self._fix_blue_text(doc)
         self._remove_instruction_boxes(doc)
 
         # Save
@@ -372,9 +372,9 @@ class JsonSapRenderer:
 
         return sap_content
 
-    def _fix_cover_page_colors(self, doc):
-        """Remove blue color from cover page placeholder text."""
-        for p in doc.paragraphs[:30]:
+    def _fix_blue_text(self, doc):
+        """Convert all blue text to black throughout the document."""
+        for p in doc.paragraphs:
             for run in p.runs:
                 if run.font.color and run.font.color.rgb:
                     if str(run.font.color.rgb) == '0000FF':
