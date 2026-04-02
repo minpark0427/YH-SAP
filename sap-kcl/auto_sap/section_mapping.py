@@ -90,6 +90,18 @@ SAP_TO_PROTOCOL_MAP: dict[str, list[str]] = {
     "missing_dates": ["9.4"],
     "lab_char_values": ["9.3.4", "10.2.5"],
 
+    # Protocol Deviation (added in Phase 4)
+    # Needs: discontinuation criteria, protocol deviation definitions
+    "protocol_deviation": ["8", "10.9"],
+
+    # Baseline Definition (added in Phase 4)
+    # Needs: assessment schedule, screening/baseline procedures
+    "baseline_definition": ["2.1", "9.1", "9.3"],
+
+    # Subgroup Analysis (added in Phase 4)
+    # Needs: population, objectives, statistical considerations
+    "subgroup_analysis": ["6", "10"],
+
     # Section 15: Changes to Protocol Analysis
     "protocol_changes": ["10.9"],
 }

@@ -106,6 +106,40 @@ LLM → {"paragraphs": [
 | 색상 | 템플릿 placeholder 색상 상속 | 검정(`000000`) 강제 |
 | Fallback | 없음 | JSON 파싱 실패 시 plain text → paragraph 분할 |
 
+---
+
+## Phase 4: GAP Analysis + PK/PD 일반화 + 태그 확장 (현재)
+
+### 문제 진단
+
+계획서, SAP 양식, 사람 작성 SAP를 3방향 교차 검증한 결과:
+
+1. **CRITICAL: PK/PD 분석 미스매치** — 프롬프트가 "Primary Efficacy Parameter" 관점으로 설계되어 있어, Phase 1 (efficacy 없음, PK/PD 중심)에서 LLM이 "Not applicable" 반환
+2. **Phase 1 특화 섹션 누락** — 사람이 작성한 SAP에는 Protocol Deviation, Baseline Definition, Subgroup Analysis 등이 별도 섹션으로 존재
+3. **커버/행정 태그 미구현** — study_number 등 계획서에 명시된 5개 태그
+
+### 해결
+
+**PK/PD 프롬프트 일반화:**
+```
+기존: "Write the Primary Efficacy Parameter(s) section"
+변경: "Write the Primary Analysis Parameter(s) section.
+       IMPORTANT: For Phase 1 studies without formal efficacy endpoints,
+       describe the primary PK analysis plan instead."
+```
+
+모든 efficacy 프롬프트(primary, secondary, additional)에 Phase 조건 분기 추가.
+
+**신규 태그 3개 추가:**
+
+| 태그 | 섹션 | 설명 |
+|------|------|------|
+| `protocol_deviation` | 4.4 | 프로토콜 위반 분류/요약 방법 |
+| `baseline_definition` | 4.13 | 분석 변수의 베이스라인 정의 규칙 |
+| `subgroup_analysis` | 4.18 | 하위그룹 분석 계획 |
+
+**결과: 36개 → 39개 태그**, 3방향 완전 일치 유지 (prompts ↔ register ↔ mapping).
+
 ### 파일 구조
 
 ```
@@ -135,3 +169,4 @@ WriteSAPs/
 | 1 (양식 적응) | 유한 템플릿 + Claude 백엔드 | 한국 제약사 양식 지원 |
 | 2 (Targeted Context) | 섹셔닝 + 매핑 + 2단계 생성 | 컨텍스트 비효율 (89% 축소) |
 | 3 (JSON 구조화) | JSON 출력 + python-docx | 서식 제어 + 문서 품질 |
+| 4 (GAP 해소) | PK/PD 일반화 + 태그 확장 (36→39) | Phase 1 대응 + 섹션 누락 |

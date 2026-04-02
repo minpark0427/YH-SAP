@@ -92,6 +92,15 @@ prompt_tasks = [
     PromptRegister("missing_dates", "medium", "low"),
     PromptRegister("lab_char_values", "low", "low"),
 
+    # Protocol Deviation (added in Phase 4 — gap analysis)
+    PromptRegister("protocol_deviation", "low", "low"),
+
+    # Baseline Definition (added in Phase 4 — gap analysis)
+    PromptRegister("baseline_definition", "low", "low"),
+
+    # Subgroup Analysis (added in Phase 4 — gap analysis)
+    PromptRegister("subgroup_analysis", "low", "low"),
+
     # Section 15: Changes to Protocol Analysis
     PromptRegister("protocol_changes", "low", "low"),
 ]

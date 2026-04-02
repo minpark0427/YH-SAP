@@ -203,18 +203,25 @@ Do not invent information not present in the protocol.
 """,
 }
 
-# Section 9: Efficacy Analysis
+# Section 9: Efficacy / PK / PD Analysis
+# NOTE: These prompts are generalized for all trial phases.
+# For Phase 1 studies without formal efficacy endpoints, these sections
+# cover PK and PD analyses instead (the most common "primary analysis" in Phase 1).
 PROMPTS_EFFICACY = {
     "primary_efficacy": """
-Write the Primary Efficacy Parameter(s) section for the SAP.
+Write the Primary Analysis Parameter(s) section for the SAP.
+
+IMPORTANT: Adapt this section based on the study phase:
+- For Phase 2/3 studies: describe the primary efficacy parameter and its statistical analysis.
+- For Phase 1 studies: if there are no formal efficacy endpoints, describe the primary pharmacokinetic (PK) analysis plan instead, as PK characterization is typically the primary analytical objective after safety.
 
 This is a critical section requiring detailed statistical reasoning. Include:
-- State the primary efficacy parameter (e.g., change from baseline in a specific measure at a specific time point).
-- Describe the primary analysis model in detail (e.g., MMRM with treatment group, visit, treatment-by-visit interaction, baseline value as covariates; or ANCOVA with specified factors).
-- State the analysis set used (e.g., FAS as primary, PPS for sensitivity).
-- Describe any sensitivity analyses planned for the primary endpoint.
-- Describe how results will be presented (e.g., LS means, treatment differences with 95% CI, p-values).
-- Mention any supportive plots or displays (e.g., plots by study visits by treatment group).
+- State the primary analysis parameter (efficacy endpoint, or PK parameters for Phase 1).
+- For PK analysis: list PK parameters to be estimated (e.g., Cmax, Tmax, AUClast, AUCinf, t1/2, CL/F, Vz/F), the analysis population (PK Analysis Set), and methods (e.g., non-compartmental analysis, descriptive statistics, dose proportionality assessment).
+- For efficacy analysis: describe the primary analysis model in detail (e.g., MMRM, ANCOVA).
+- State the analysis set used.
+- Describe any sensitivity analyses planned.
+- Describe how results will be presented (e.g., descriptive statistics, geometric means, dose-response plots, LS means with 95% CI).
 
 Write in full paragraphs with sufficient detail for unambiguous implementation.
 Follow ICH E9(R1) estimand framework if applicable.
@@ -222,28 +229,35 @@ Do not invent statistical methods not specified in the protocol.
 """,
 
     "secondary_efficacy": """
-Write the Secondary Efficacy Parameter(s) section for the SAP.
+Write the Secondary Analysis Parameter(s) section for the SAP.
+
+IMPORTANT: Adapt based on study phase:
+- For Phase 2/3: describe secondary efficacy parameters.
+- For Phase 1: describe secondary PK analyses (e.g., food effect assessment, dose proportionality) and/or pharmacodynamic (PD) analyses (e.g., biomarker changes, PD parameters like AUEC, Emax).
 
 Include:
-- List each secondary efficacy parameter as defined in the protocol.
-- For each secondary parameter, describe the planned analysis method.
-- If secondary outcomes will be analyzed in the same way as the primary outcome, state this explicitly.
-- If different methods are used, describe them with sufficient detail.
+- List each secondary parameter as defined in the protocol.
+- For each parameter, describe the planned analysis method.
 - State the analysis set and any multiplicity adjustments if specified.
+- For PD analyses: describe biomarkers measured, summary statistics, and any PK/PD relationship exploration.
 
 Write in full paragraphs. Be concise but complete.
 Do not invent information not present in the protocol.
 """,
 
     "additional_efficacy": """
-Write the Additional Efficacy Parameter(s) section for the SAP.
+Write the Additional/Exploratory Analysis Parameter(s) section for the SAP.
+
+IMPORTANT: Adapt based on study phase:
+- For Phase 2/3: describe additional or exploratory efficacy parameters.
+- For Phase 1: describe exploratory analyses such as metabolite identification, CSF biomarkers, PK/PD modeling, or any other exploratory endpoints specified in the protocol.
 
 Include:
-- List any additional or exploratory efficacy parameters described in the protocol.
+- List any additional or exploratory parameters described in the protocol.
 - Describe the analysis approach for each.
 - These are typically descriptive or exploratory analyses.
 
-If the protocol does not specify additional efficacy parameters, state: "No additional efficacy parameters are specified in the protocol."
+If the protocol does not specify additional parameters, state: "No additional analysis parameters are specified in the protocol."
 
 Write concisely. Do not invent information not present in the protocol.
 """,
@@ -493,6 +507,57 @@ Do not invent information not present in the protocol.
 """,
 }
 
+# Protocol Deviation
+PROMPTS_PROTOCOL_DEVIATION = {
+    "protocol_deviation": """
+Write the Protocol Deviation section for the SAP.
+
+Describe:
+- How protocol deviations will be identified, classified, and documented.
+- Categories of protocol deviations (e.g., major vs minor, or specific categories such as entry criteria violations, prohibited concomitant medication, dosing errors, visit window violations).
+- How major protocol deviations will be summarized (by treatment group, by category, for the relevant analysis set).
+- State that the list of major protocol deviations will be finalized and documented prior to database lock/unblinding.
+- Note whether subjects with major protocol deviations will be excluded from the Per-Protocol Set.
+
+Write concisely. Extract classification criteria from the protocol if available.
+Do not invent information not present in the protocol.
+""",
+}
+
+# Baseline Definition
+PROMPTS_BASELINE = {
+    "baseline_definition": """
+Write the Definition of Baseline section for the SAP.
+
+Describe:
+- The general rule for defining the baseline value for each analysis variable.
+- For most variables, the baseline is typically the last non-missing assessment prior to or on the date of first dose of investigational product.
+- For safety parameters with repeated baseline assessments (e.g., vital signs, ECG), specify which measurement is used as baseline.
+- If different baseline definitions apply to different endpoints, state each explicitly.
+- Note any special cases (e.g., baseline for unscheduled assessments, baseline for subjects who did not receive IP).
+
+Write as a concise paragraph or short section.
+Do not invent information not present in the protocol.
+""",
+}
+
+# Subgroup Analysis
+PROMPTS_SUBGROUP = {
+    "subgroup_analysis": """
+Write the Subgroup Analysis section for the SAP.
+
+Describe:
+- Whether subgroup analyses are planned for this study.
+- If planned, list the subgroup variables (e.g., age group, sex, race, baseline disease severity, geographic region, weight category).
+- Describe the analysis approach for subgroups (e.g., same model as primary analysis with subgroup as an additional factor, forest plots, descriptive summaries by subgroup).
+- State that subgroup analyses are exploratory and not powered for statistical significance unless otherwise specified.
+
+If no subgroup analyses are planned, state: "No formal subgroup analyses are planned for this study." and briefly explain why (e.g., small sample size in Phase 1).
+
+Write concisely. Do not invent information not present in the protocol.
+""",
+}
+
 # Section 15: Changes to Protocol Analysis
 PROMPTS_CHANGES = {
     "protocol_changes": """
@@ -534,6 +599,9 @@ for _d in [
     PROMPTS_SOFTWARE,
     PROMPTS_STAT_CONSIDERATIONS,
     PROMPTS_DATA_HANDLING,
+    PROMPTS_PROTOCOL_DEVIATION,
+    PROMPTS_BASELINE,
+    PROMPTS_SUBGROUP,
     PROMPTS_CHANGES,
 ]:
     PROMPTS_DICTIONARY.update(_d)

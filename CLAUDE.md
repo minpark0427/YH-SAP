@@ -67,6 +67,10 @@ YH-SAP/
 - [x] Added MultiStepGenerator — 2-step generation for high-complexity sections
 - [x] Refactored template_class — per-tag targeted context, write_sap() API unchanged
 - [x] E2E validated: 36/36 sections, 0 errors, 85s (test mode)
+- [x] Added JSON structured output + python-docx rendering (B안) — no markdown in docx
+- [x] GAP analysis: plan vs SAP template vs human-written SAP
+- [x] PK/PD prompt generalization — Phase 1 studies now generate PK/PD analysis instead of "Not applicable"
+- [x] Added 3 new tags: protocol_deviation, baseline_definition, subgroup_analysis (36→39 tags)
 
 ## What Still Needs To Be Done
 
@@ -97,7 +101,7 @@ YH-SAP/
 - Template uses `docxtpl` (Jinja2 in docx), not `python-docx` directly
 - **Regenerate template**: `python scripts/create_yuhan_template.py` (reads original docx, inserts tags, saves to templates/)
 
-## Yuhan SAP Template Tags (36 total)
+## Yuhan SAP Template Tags (39 total)
 
 | # | Section | Tag | reasoning_effort |
 |---|---------|-----|-----------------|
@@ -114,9 +118,9 @@ YH-SAP/
 | 7.2 | Treatment Compliance | `treatment_compliance` | low |
 | 8.1 | Medical History | `medical_history` | minimal |
 | 8.2 | Concomitant Medication | `concomitant_medication` | low |
-| 9.1 | Primary Efficacy | `primary_efficacy` | **high** |
-| 9.2 | Secondary Efficacy | `secondary_efficacy` | **high** |
-| 9.3 | Additional Efficacy | `additional_efficacy` | medium |
+| 9.1 | Primary Analysis (Efficacy/PK) | `primary_efficacy` | **high** |
+| 9.2 | Secondary Analysis (Efficacy/PD) | `secondary_efficacy` | **high** |
+| 9.3 | Additional/Exploratory Analysis | `additional_efficacy` | medium |
 | 10.1 | Adverse Events | `adverse_events` | medium |
 | 10.2 | Lab Parameters | `lab_parameters` | low |
 | 10.3 | Vital Signs | `vital_signs` | low |
@@ -136,4 +140,7 @@ YH-SAP/
 | 14.6 | Missing Causality | `missing_causality` | minimal |
 | 14.7 | Missing Dates | `missing_dates` | medium |
 | 14.8 | Lab Character Values | `lab_char_values` | low |
+| — | Protocol Deviation | `protocol_deviation` | low |
+| — | Baseline Definition | `baseline_definition` | low |
+| — | Subgroup Analysis | `subgroup_analysis` | low |
 | 15 | Protocol Changes | `protocol_changes` | low |
