@@ -10,7 +10,11 @@ Tag names must be identical across all three files.
 
 
 def system_message(protocol_text: str) -> str:
-    """Return the system message that provides the protocol context to the LLM."""
+    """Return the system message that provides the protocol context to the LLM.
+
+    The protocol_text argument may be the full protocol or a targeted context
+    assembled by ContextAssembler (containing only relevant sections).
+    """
     return (
         "You are an expert biostatistician specialising in pharmaceutical clinical trials. "
         "You are given a clinical trial protocol and will be asked to write sections for "

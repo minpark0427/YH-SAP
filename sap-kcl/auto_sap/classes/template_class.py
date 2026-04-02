@@ -7,10 +7,14 @@ from auto_sap.classes.chat_classes import (
     ClaudeCodeChat, ClaudeCodeChatAsync,
 )
 from auto_sap.classes.protocol_classes import Protocol
+from auto_sap.classes.protocol_segmenter import ProtocolSegmenter
+from auto_sap.classes.context_assembler import ContextAssembler
+from auto_sap.classes.multi_step_generator import MultiStepGenerator, HIGH_COMPLEXITY_TAGS
 from auto_sap.classes.auto_code_classes import AutoCodePipeline
+from auto_sap.section_mapping import SAP_TO_PROTOCOL_MAP, GLOBAL_CONTEXT_SECTIONS
 import asyncio
 from datetime import date
-import time 
+import time
 
 
 
@@ -35,21 +39,78 @@ class Template:
         self.backend = backend
 
     
+    def _get_async_chat_class(self, backend):
+        """Return the appropriate async chat class for the given backend."""
+        if backend == "claudecode":
+            return ClaudeCodeChatAsync
+        elif backend == "anthropic" or (backend == "auto" and backend and backend.startswith("claude-")):
+            return AnthropicChatAsync
+        else:
+            return OpenAIChatAsync
+
     async def get_sap_content_async(self, protocol_text, model="claude-sonnet-4-5-20250929", backend=None):
         backend = backend or self.backend
-        sys_msg = self.system_message_function(protocol_text)
 
-        if backend == "claudecode":
-            chat_bot = ClaudeCodeChatAsync(model_name=model, system_message=sys_msg)
-        elif backend == "anthropic" or (backend == "auto" and model.startswith("claude-")):
-            chat_bot = AnthropicChatAsync(model_name=model, system_message=sys_msg)
-        else:
-            chat_bot = OpenAIChatAsync(model_name=model, system_message=sys_msg)
-        
-        self.sap_content = await chat_bot.run_prompts_register(
-            prompt_register=self.prompt_register, 
-            prompt_dictionary=self.prompts_dictionary
+        # --- Targeted context assembly ---
+        segmenter = ProtocolSegmenter(protocol_text)
+        assembler = ContextAssembler(
+            segmenter, SAP_TO_PROTOCOL_MAP, GLOBAL_CONTEXT_SECTIONS, protocol_text
         )
+        context_map = assembler.assemble_all()
+        multi_step = MultiStepGenerator()
+        chat_class = self._get_async_chat_class(backend)
+
+        print(f"Running {len(self.prompt_register)} prompts with targeted context...")
+        results = {}
+
+        async def run_one(item):
+            var_name = item.variable
+            prompt = self.prompts_dictionary.get(var_name, "")
+
+            print(f"Running {var_name}")
+            if not prompt:
+                print(f"No prompt in prompt dictionary for {var_name}")
+                return var_name, "ERROR: tag not in prompt dictionary"
+
+            # Get targeted context for this tag
+            tag_context = context_map.get(var_name, protocol_text)
+            tag_sys_msg = self.system_message_function(tag_context)
+
+            try:
+                if var_name in HIGH_COMPLEXITY_TAGS:
+                    # 2-step: extraction → generation
+                    response_content = await multi_step.generate(
+                        tag=var_name,
+                        context=tag_context,
+                        sap_prompt=prompt,
+                        system_message_fn=self.system_message_function,
+                        chat_class=chat_class,
+                        model=model,
+                        reasoning_effort=item.reasoning_effort,
+                        verbosity=item.verbosity,
+                    )
+                else:
+                    # Single-step with targeted context
+                    bot = chat_class(model_name=model, system_message=tag_sys_msg)
+                    response = await bot.get_response(
+                        prompt=prompt,
+                        reasoning_effort=item.reasoning_effort,
+                        verbosity=item.verbosity,
+                    )
+                    response_content = (response.get("content", "") or "").strip()
+                    if not response_content:
+                        response_content = "ERROR"
+            except Exception as e:
+                print(f"An error occurred for {var_name}: {e}")
+                response_content = "ERROR"
+
+            return var_name, response_content
+
+        tasks = [run_one(item) for item in self.prompt_register]
+        for var_name, value in await asyncio.gather(*tasks):
+            results[var_name] = value
+
+        self.sap_content = results
 
         today = date.today()
         str_today = today.strftime("%d/%m/%y")
