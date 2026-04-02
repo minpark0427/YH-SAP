@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from tempfile import template
 from docxtpl import DocxTemplate
@@ -17,6 +18,19 @@ from datetime import date
 import time
 
 
+def _strip_markdown(text: str) -> str:
+    """Remove markdown formatting from LLM output for clean docx rendering."""
+    text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'__(.+?)__', r'\1', text)
+    text = re.sub(r'(?<!\w)\*([^*\n]+?)\*(?!\w)', r'\1', text)
+    text = re.sub(r'`([^`]+)`', r'\1', text)
+    text = re.sub(r'```[\s\S]*?```', '', text)
+    text = re.sub(r'^[-*]\s+', '- ', text, flags=re.MULTILINE)
+    text = re.sub(r'^-{3,}$', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
+
 
 class Template:
     def __init__(
@@ -31,14 +45,13 @@ class Template:
     ) -> None:
 
         self.template_path = template_path
-        self.system_message_function = system_message_function # a function of protocol text
+        self.system_message_function = system_message_function
         self.prompt_register = prompt_register
         self.prompts_dictionary = prompts_dictionary
         self.template_name = template_name
         self.prompts_name = prompts_name
         self.backend = backend
 
-    
     def _get_async_chat_class(self, backend):
         """Return the appropriate async chat class for the given backend."""
         if backend == "claudecode":
@@ -51,7 +64,6 @@ class Template:
     async def get_sap_content_async(self, protocol_text, model="claude-sonnet-4-5-20250929", backend=None):
         backend = backend or self.backend
 
-        # --- Targeted context assembly ---
         segmenter = ProtocolSegmenter(protocol_text)
         assembler = ContextAssembler(
             segmenter, SAP_TO_PROTOCOL_MAP, GLOBAL_CONTEXT_SECTIONS, protocol_text
@@ -72,13 +84,11 @@ class Template:
                 print(f"No prompt in prompt dictionary for {var_name}")
                 return var_name, "ERROR: tag not in prompt dictionary"
 
-            # Get targeted context for this tag
             tag_context = context_map.get(var_name, protocol_text)
             tag_sys_msg = self.system_message_function(tag_context)
 
             try:
                 if var_name in HIGH_COMPLEXITY_TAGS:
-                    # 2-step: extraction → generation
                     response_content = await multi_step.generate(
                         tag=var_name,
                         context=tag_context,
@@ -90,7 +100,6 @@ class Template:
                         verbosity=item.verbosity,
                     )
                 else:
-                    # Single-step with targeted context
                     bot = chat_class(model_name=model, system_message=tag_sys_msg)
                     response = await bot.get_response(
                         prompt=prompt,
@@ -108,7 +117,7 @@ class Template:
 
         tasks = [run_one(item) for item in self.prompt_register]
         for var_name, value in await asyncio.gather(*tasks):
-            results[var_name] = value
+            results[var_name] = _strip_markdown(value) if value != "ERROR" else value
 
         self.sap_content = results
 
@@ -118,20 +127,18 @@ class Template:
         self.sap_content.update(
             {"template_prompt_version": f"{self.template_name} with prompts {self.prompts_name}"}
         )
-    
+
     def get_sap_content(self, protocol_text, model="claude-sonnet-4-5-20250929", backend=None):
         asyncio.run(self.get_sap_content_async(protocol_text, model, backend))
 
-        
     def save_content_as_text(self, path):
         sap_content = self.sap_content
         with open(path, "w", encoding="utf-8") as f:
             for key, value in sap_content.items():
                 f.write(f"{key}: {value}\n")
         print(f"raw SAP content saved to {path}")
-            
 
-    def populate(self, sap_folder, sap_name = 'SAP.docx'):
+    def populate(self, sap_folder, sap_name='SAP.docx'):
         if getattr(self, "sap_content", None) is not None:
             sap_content = self.sap_content
             template = DocxTemplate(self.template_path)
@@ -140,9 +147,9 @@ class Template:
             template.save(output_path)
             print(f"SAP saved to {output_path}")
         else:
-             raise ValueError("sap_content must be set before populating template.")
-        
-    def write_sap(self, protocol_path, sap_name, sap_folder_path = "SAPs", test = False):
+            raise ValueError("sap_content must be set before populating template.")
+
+    def write_sap(self, protocol_path, sap_name, sap_folder_path="SAPs", test=False):
         t0 = time.time()
 
         protocol = Protocol(protocol_path)
@@ -152,14 +159,14 @@ class Template:
             print("Test enabled - running with claude-haiku-4-5-20251001")
             self.get_sap_content(protocol.protocol_txt, model="claude-haiku-4-5-20251001")
 
-        self.save_content_as_text(path = f"{sap_folder_path}/{sap_name}_content.txt")
-        self.populate(sap_folder = sap_folder_path, sap_name = f"{sap_name}.docx")
+        self.save_content_as_text(path=f"{sap_folder_path}/{sap_name}_content.txt")
+        self.populate(sap_folder=sap_folder_path, sap_name=f"{sap_name}.docx")
 
         t1 = time.time()
-        total_time = round(t1- t0)
+        total_time = round(t1 - t0)
         print(f"SAP written in {total_time} seconds")
 
-    def get_autocode_json(self, output_path = None, model = "claude-sonnet-4-5-20250929", backend=None):
+    def get_autocode_json(self, output_path=None, model="claude-sonnet-4-5-20250929", backend=None):
         backend = backend or self.backend
         if getattr(self, "sap_content", None) is not None:
             if backend == "claudecode":
@@ -169,9 +176,7 @@ class Template:
             else:
                 chat_bot = OpenAIChat(model_name=model, system_message="")
             pipeline = AutoCodePipeline(chat_bot)
-            
-            # TODO: This may need to be adjusted based on how sap_content is structured for a specific tempalte
-            # could let a set of strings be passed to the template class init specifying which sections of sap content to use.
+
             content_for_autocode = {
                 "timepoint_content": self.sap_content.get("primary_outcome_measures", "") + "\n" + self.sap_content.get("secondary_outcome_measures", ""),
                 "variables_content": self.sap_content.get("primary_outcome_measures", "") + "\n" + self.sap_content.get("secondary_outcome_measures", ""),

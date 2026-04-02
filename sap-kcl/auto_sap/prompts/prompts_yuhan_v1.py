@@ -26,6 +26,13 @@ def system_message(protocol_text: str) -> str:
         "- Follow ICH E9(R1) estimand framework where applicable.\n"
         "- Write in English unless instructed otherwise.\n"
         "- Use terminology consistent with CDISC standards (SDTM/ADaM) where appropriate.\n\n"
+        "CRITICAL FORMATTING RULES:\n"
+        "- Do NOT use any markdown formatting: no #, ##, **, *, -, ```, or other markdown syntax.\n"
+        "- Write in plain text only. No headings with # symbols.\n"
+        "- For emphasis, simply use UPPERCASE or write naturally without markup.\n"
+        "- For lists, use plain numbered lists (1. 2. 3.) or lettered lists (a. b. c.).\n"
+        "- Do NOT repeat the section title — go straight to the content.\n"
+        "- Write as if composing a formal Word document, not a markdown file.\n\n"
         f"The protocol is:\n\n{protocol_text}"
     )
 
