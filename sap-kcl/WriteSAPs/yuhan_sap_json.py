@@ -39,6 +39,8 @@ def json_system_message(context: str) -> str:
         "- Write in English unless instructed otherwise.\n"
         "- Use terminology consistent with CDISC standards (SDTM/ADaM) where appropriate.\n\n"
         "CONTENT COMPLETENESS RULES:\n"
+        "- The Yuhan SAP template has standard required topics (in black text) — these indicate "
+        "TOPICS to cover, not exact wording. Adapt content to the specific protocol.\n"
         "- If the protocol contains relevant information, you MUST include it.\n"
         "- If the protocol does NOT contain sufficient information for a requested item, "
         "use this exact paragraph: {\"text\": \"[SKIP: brief reason]\", \"style\": \"body\"}\n"
