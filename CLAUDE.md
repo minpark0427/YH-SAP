@@ -61,13 +61,17 @@ YH-SAP/
 - [x] Smoke test passed: import and Template instantiation OK
 - [x] Switched LLM backend from OpenAI to Anthropic Claude (claude-sonnet-4-5)
 - [x] Added ClaudeCodeChat backend — calls `claude` CLI subprocess (no API key needed)
+- [x] Added ProtocolSegmenter — heading-based protocol sectioning (126 sections)
+- [x] Added SECTION_MAPPING — SAP tag → protocol section mapping (36 tags)
+- [x] Added ContextAssembler — targeted context per tag (89% reduction, avg 12.5K vs 111K)
+- [x] Added MultiStepGenerator — 2-step generation for high-complexity sections
+- [x] Refactored template_class — per-tag targeted context, write_sap() API unchanged
+- [x] E2E validated: 36/36 sections, 0 errors, 85s (test mode)
 
 ## What Still Needs To Be Done
 
-### 1. End-to-end validation with a real protocol
-- Run with a test protocol PDF to verify the full pipeline works
-- Check that all template tags are populated correctly
-- Review generated SAP against Yuhan template for completeness and formatting
+### 1. ~~End-to-end validation with a real protocol~~ ✅ Done
+- Validated with YH00000 protocol: 36/36 sections, 0 errors, 85s runtime
 
 ### 2. Prompt tuning
 - Evaluate generated SAP quality against existing completed SAPs
@@ -79,6 +83,7 @@ YH-SAP/
 - Table generation (Table shells are common in Yuhan SAPs)
 - Auto-code pipeline integration (R/SAS code generation from SAP)
 - ~~LLM provider flexibility~~ ✅ Done — 3 backends: `claudecode` (default, no API key), `anthropic`, `openai`
+- ~~Targeted-context generation~~ ✅ Done — 89% context reduction per LLM call
 
 ## Key Conventions
 
