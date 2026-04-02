@@ -19,10 +19,29 @@ Thumbs.db
 # Word temp files
 ~$*.docx
 
-# SAP outputs (generated, not source)
+# ============================================
+# Confidential / protocol / test data
+# ============================================
+
+# Protocol documents (confidential)
+YH00000-101_*.docx
+YH00000-101_*.pdf
+
+# SAP template (proprietary Yuhan format)
+SBS02T01*.docx
+
+# Human-written SAP reference
+*SAP ver*.docx
+
+# SAP checklist
+*Checklist*.docx
+
+# All SAP generation outputs (test results)
 sap-kcl/SAPs/
-sap-kcl/SAPs_v2/
-sap-kcl/SAPs_v3/
+sap-kcl/SAPs_v*/
 
 # Sisyphus evidence (runtime artifacts)
 .sisyphus/evidence/
+
+# Validation reports (contain protocol-specific data)
+*validation_report*
