@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+YH-SAP-venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Word temp files
+~$*.docx
+
+# SAP outputs (generated, not source)
+sap-kcl/SAPs/
+sap-kcl/SAPs_v2/
+sap-kcl/SAPs_v3/
+
+# Sisyphus evidence (runtime artifacts)
+.sisyphus/evidence/

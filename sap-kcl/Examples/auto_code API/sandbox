@@ -1,0 +1,21 @@
+from auto_sap.classes.auto_code_api_classes import auto_code_api, trial_creator
+api = auto_code_api(dev = True)
+
+trial_title = "API Trial Example Title"
+trial_acronym = "API_TRIAL_EXAMPLE"
+
+posted_trial =   api.post_(data = {
+        "acronym": trial_acronym,
+        "title": trial_title
+    }, endpoint = "trial/")
+
+
+trial_data = api.get_("trial/", 
+                      params = {"title": trial_title})
+
+print("Posted trial:")
+print(posted_trial)
+
+print("Initial trial data:")
+
+print(trial_data)

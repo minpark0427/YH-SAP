@@ -1,0 +1,523 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Instrument+Serif:ital@0;1&display=swap');
+
+.sl * { margin: 0; padding: 0; box-sizing: border-box; }
+.sl {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #111;
+    line-height: 1.7;
+    background: #fafafa;
+}
+
+.sl-hero {
+    text-align: center;
+    padding: 5rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #f0faf4 0%, #fafafa 100%);
+}
+
+.sl-hero::before {
+    content: '';
+    position: absolute;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 900px;
+    background: radial-gradient(circle, rgba(45,106,79,0.07) 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.sl-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.sl-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #2d6a4f;
+    letter-spacing: 0.06em;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.sl-chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2d6a4f;
+}
+
+.sl-hero h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.6rem, 5.5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    color: #111;
+    margin-bottom: 1.2rem;
+}
+
+.sl-hero h1 span { color: #2d6a4f; }
+
+.sl-tagline {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #2d6a4f;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.sl-hero-sub {
+    font-size: 1.05rem;
+    color: #6b7280;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.sl-trust {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 2rem 2rem 0;
+    flex-wrap: wrap;
+}
+
+.sl-trust-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+}
+
+.sl-trust-item {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #d1d5db;
+    letter-spacing: 0.02em;
+}
+
+.sl-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 800px;
+    margin: 3rem auto 0;
+    gap: 1px;
+    background: #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.sl-stat {
+    background: #fff;
+    padding: 1.8rem 1rem;
+    text-align: center;
+}
+
+.sl-stat-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #2d6a4f;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.03em;
+}
+
+.sl-stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+}
+
+.sl-section {
+    padding: 5rem 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.sl-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #2d6a4f;
+    margin-bottom: 0.6rem;
+}
+
+.sl-h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.8rem;
+}
+
+.sl-sub {
+    font-size: 1rem;
+    color: #6b7280;
+    max-width: 560px;
+    line-height: 1.8;
+}
+
+.sl-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.sl-card {
+    padding: 2rem;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.sl-card:hover {
+    border-color: #d1fae5;
+    box-shadow: 0 8px 30px rgba(45,106,79,0.06);
+    transform: translateY(-2px);
+}
+
+.sl-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: #f0faf4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: #2d6a4f;
+}
+
+.sl-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+.sl-card p { font-size: 0.85rem; color: #6b7280; line-height: 1.7; }
+
+.sl-steps-section {
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.sl-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2.5rem;
+}
+
+.sl-step { position: relative; padding: 0; }
+
+.sl-step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #2d6a4f;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.sl-step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+.sl-step p { font-size: 0.85rem; color: #6b7280; line-height: 1.7; }
+
+.sl-results {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.sl-result {
+    padding: 1.8rem 1.2rem;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #f0f0f0;
+    text-align: center;
+}
+
+.sl-result-num {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #2d6a4f;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.03em;
+}
+
+.sl-result-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    margin-bottom: 0.4rem;
+}
+
+.sl-result-desc { font-size: 0.78rem; color: #9ca3af; line-height: 1.5; }
+
+.sl-quote {
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: #f0faf4;
+    border-radius: 16px;
+    position: relative;
+}
+
+.sl-quote p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #1a1a2e;
+    line-height: 1.7;
+    max-width: 640px;
+}
+
+.sl-quote-attr {
+    margin-top: 0.8rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-style: normal !important;
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.sl-team-section {
+    background: #111;
+    color: #fff;
+    padding: 5rem 2rem;
+}
+
+.sl-team-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.sl-team-section .sl-eyebrow { color: #95d5b2; }
+.sl-team-section .sl-h2 { color: #fff; }
+.sl-team-section .sl-sub { color: rgba(255,255,255,0.45); margin: 0 auto; }
+
+.sl-team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 2.5rem;
+    justify-content: center;
+}
+
+.sl-member {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 1rem 0.45rem 0.45rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 100px;
+    transition: all 0.25s;
+}
+
+.sl-member:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(149,213,178,0.25);
+    transform: translateY(-1px);
+}
+
+.sl-m-av {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2d6a4f, #40916c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.sl-m-info h4 { font-size: 0.75rem; font-weight: 600; color: #fff; line-height: 1.2; }
+.sl-m-info p { font-size: 0.62rem; color: rgba(255,255,255,0.4); line-height: 1.2; }
+
+.sl-footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    border-top: 1px solid #f0f0f0;
+}
+
+.sl-footer a { color: #2d6a4f; text-decoration: none; }
+
+@media (max-width: 768px) {
+    .sl-stats { grid-template-columns: repeat(2, 1fr); }
+    .sl-cards { grid-template-columns: 1fr; }
+    .sl-steps { grid-template-columns: 1fr; }
+    .sl-results { grid-template-columns: 1fr 1fr; }
+}
+</style>
+
+<div class="sl">
+    <div class="sl-hero">
+        <div class="sl-hero-inner">
+            <div class="sl-chip"><span class="sl-chip-dot"></span> Developed by King's College London Clinical Trials Unit</div>
+            <h1>Statistical Analysis Plans,<br>in Minutes</h1>
+            <div class="sl-tagline">Drafted by AI. Refined by you.</div>
+            <p class="sl-hero-sub">SAPAI generates statistical analysis plans directly from clinical trial protocols. Every output has been validated for accuracy by independent trial statisticians across nine real world trials.</p>
+
+            <div class="sl-stats">
+                <div class="sl-stat"><div class="sl-stat-num">80%+</div><div class="sl-stat-label">Accuracy</div></div>
+                <div class="sl-stat"><div class="sl-stat-num">9</div><div class="sl-stat-label">Trials</div></div>
+                <div class="sl-stat"><div class="sl-stat-num">3</div><div class="sl-stat-label">LLMs</div></div>
+                <div class="sl-stat"><div class="sl-stat-num">27</div><div class="sl-stat-label">SAPs Generated</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sl-trust">
+        <span class="sl-trust-label">Validated with</span>
+        <span class="sl-trust-item">OpenAI GPT 5</span>
+        <span class="sl-trust-item">Anthropic Claude Sonnet 4</span>
+        <span class="sl-trust-item">Google Gemini 2.5 Pro</span>
+    </div>
+
+    <div class="sl-section">
+        <div class="sl-eyebrow">The Challenge</div>
+        <h2 class="sl-h2">SAPs are essential,<br>but writing them is slow</h2>
+        <p class="sl-sub">Statistical analysis plans are central to the credibility of randomised clinical trials, yet they remain cognitively demanding and time consuming to produce.</p>
+        <div class="sl-cards">
+            <div class="sl-card">
+                <div class="sl-card-icon">&#9888;</div>
+                <h3>Resource Intensive</h3>
+                <p>SAPs must be written prior to unblinded data review, typically before the first Data Monitoring Committee meeting.</p>
+            </div>
+            <div class="sl-card">
+                <div class="sl-card-icon">&#10003;</div>
+                <h3>Critical for Credibility</h3>
+                <p>They eliminate discretionary analytic decisions, provide a specification for coding, and support transparent reporting.</p>
+            </div>
+            <div class="sl-card">
+                <div class="sl-card-icon">&#9881;</div>
+                <h3>Highly Structured</h3>
+                <p>JAMA guidance outlines requirements covering analysis populations, model specifications, multiplicity, and sensitivity analyses.</p>
+            </div>
+            <div class="sl-card">
+                <div class="sl-card-icon">&#9733;</div>
+                <h3>AI Opportunity</h3>
+                <p>LLMs accelerate drafting of descriptive sections, freeing statisticians for complex methodological decisions.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sl-steps-section">
+        <div class="sl-section">
+            <div class="sl-eyebrow">How It Works</div>
+            <h2 class="sl-h2">Protocol to code<br>in three steps</h2>
+            <p class="sl-sub">SAPAI walks you through a structured workflow, using AI to extract trial details and generate both documentation and executable analysis scripts.</p>
+            <div class="sl-steps">
+                <div class="sl-step">
+                    <div class="sl-step-badge">1</div>
+                    <h3>Upload Protocol</h3>
+                    <p>Upload your trial protocol as PDF, DOCX, or text. AI extracts design, endpoints, randomisation, and sample size.</p>
+                </div>
+                <div class="sl-step">
+                    <div class="sl-step-badge">2</div>
+                    <h3>Define &amp; Refine</h3>
+                    <p>Review and edit AI suggested timepoints, outcome measures, and statistical analyses. You stay in control at every step.</p>
+                </div>
+                <div class="sl-step">
+                    <div class="sl-step-badge">3</div>
+                    <h3>Generate Outputs</h3>
+                    <p>Download a draft SAP as Word and a ZIP with executable R or Python analysis code, ready for your trial.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sl-section">
+        <div class="sl-eyebrow">Validation</div>
+        <h2 class="sl-h2">Rigorously tested across<br>9 real world trials</h2>
+        <p class="sl-sub">27 SAPs double scored by independent trial statisticians against a 46 item JAMA derived quality checklist.</p>
+
+        <div class="sl-results">
+            <div class="sl-result">
+                <div class="sl-result-num">83%</div>
+                <div class="sl-result-label">Descriptive</div>
+                <div class="sl-result-desc">Admin, design, eligibility</div>
+            </div>
+            <div class="sl-result">
+                <div class="sl-result-num">68%</div>
+                <div class="sl-result-label">Statistical</div>
+                <div class="sl-result-desc">Modelling, sensitivity</div>
+            </div>
+            <div class="sl-result">
+                <div class="sl-result-num">p=0.60</div>
+                <div class="sl-result-label">Cross Model</div>
+                <div class="sl-result-desc">No difference between LLMs</div>
+            </div>
+            <div class="sl-result">
+                <div class="sl-result-num" style="font-size:1.2rem;line-height:1.3;">Human<br>in Loop</div>
+                <div class="sl-result-label">Key Insight</div>
+                <div class="sl-result-desc">Expert oversight essential</div>
+            </div>
+        </div>
+
+        <div class="sl-quote">
+            <p>LLMs are powerful accelerators for the trial statistician, but they remain, for now, the draughtsman rather than the architect.</p>
+            <p class="sl-quote-attr">Forbes et al., SAPAI Validation Study</p>
+        </div>
+    </div>
+
+    <div class="sl-team-section">
+        <div class="sl-team-inner">
+            <div class="sl-eyebrow">Team</div>
+            <h2 class="sl-h2">Department of Biostatistics<br>&amp; Health Informatics</h2>
+            <p class="sl-sub">King's College London &middot; Institute of Psychiatry, Psychology &amp; Neuroscience</p>
+
+            <div class="sl-team-grid">
+                <div class="sl-member"><div class="sl-m-av">GF</div><div class="sl-m-info"><h4>Gordon Forbes</h4><p>Statistician, Lead</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">HJ</div><div class="sl-m-info"><h4>Hassan Jafari</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">PC</div><div class="sl-m-info"><h4>Petrina Chu</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">ML</div><div class="sl-m-info"><h4>Maximin Lange</h4><p>Postdoctoral Researcher</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">FM</div><div class="sl-m-info"><h4>Francesca Maher</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">CG</div><div class="sl-m-info"><h4>Callum Glen</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">OP</div><div class="sl-m-info"><h4>Oliver Pearson</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">CB</div><div class="sl-m-info"><h4>Ciel Burges</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">LM</div><div class="sl-m-info"><h4>Louise MacGregor</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">MM</div><div class="sl-m-info"><h4>Meredith Martyn</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">KG</div><div class="sl-m-info"><h4>Kimberley Goldsmith</h4><p>Statistician</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">RE</div><div class="sl-m-info"><h4>Richard Emsley</h4><p>Professor of Medical Statistics</p></div></div>
+                <div class="sl-member"><div class="sl-m-av">BC</div><div class="sl-m-info"><h4>Ben Carter</h4><p>Professor of Medical Statistics</p></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sl-footer">
+        <p>&copy; 2025 SAPAI &middot; King's College London Clinical Trials Unit, IoPPN &middot; <a href="https://github.com/rct-sap-ai/sapai-jama-sap-validation">GitHub</a></p>
+    </div>
+</div>

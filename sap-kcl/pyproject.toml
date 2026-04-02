@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-sap"
+version = "0.1.0"
+description = "Auto SAP generation tools"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "docxtpl==0.20.1",
+    "openai==2.13.0",
+    "PyPDF2==3.0.1",
+    "python-dotenv==1.2.1"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["auto_sap*"]
+
+
+
+
+[tool.setuptools.package-data]
+auto_sap = [
+  "templates/**/*.docx",
+]
+
+[tool.setuptools]
+include-package-data = true
