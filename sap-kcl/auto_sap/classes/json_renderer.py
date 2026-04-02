@@ -61,6 +61,18 @@ def parse_llm_json(text: str) -> list[dict]:
     return _plain_text_to_paragraphs(text)
 
 
+def _is_skip_marker(text: str) -> tuple[bool, str]:
+    """Check if text contains a [SKIP: reason] marker."""
+    import re
+    match = re.search(r'\[SKIP:\s*(.+?)\]', text)
+    if match:
+        return True, match.group(1).strip()
+    # Also catch common variations
+    if text.strip().startswith("[SKIP") or "not specified in the protocol" in text.lower()[:100]:
+        return True, text.strip()
+    return False, ""
+
+
 def _plain_text_to_paragraphs(text: str) -> list[dict]:
     """Convert plain text (possibly with markdown) to paragraph dicts."""
     # Strip markdown
@@ -149,8 +161,9 @@ class JsonSapRenderer:
                             '{{statistical_software_version}}', version
                         )
 
-        # Post-process: remove blue color from cover page placeholders
+        # Post-process
         self._fix_cover_page_colors(doc)
+        self._remove_instruction_boxes(doc)
 
         # Save
         output_path = Path(output_path)
@@ -182,6 +195,9 @@ class JsonSapRenderer:
             if not text:
                 continue
 
+            # Check for SKIP marker
+            is_skip, skip_reason = _is_skip_marker(text)
+
             new_p = copy.deepcopy(placeholder_elem)
             for r in new_p.findall(qn('w:r')):
                 new_p.remove(r)
@@ -207,11 +223,20 @@ class JsonSapRenderer:
 
             new_r = OxmlElement('w:r')
             rPr = OxmlElement('w:rPr')
-            if style == "bold":
+
+            if is_skip:
+                # Yellow highlight for skipped sections
+                highlight = OxmlElement('w:highlight')
+                highlight.set(qn('w:val'), 'yellow')
+                rPr.append(highlight)
+                # Italic for skip text
+                rPr.append(OxmlElement('w:i'))
+                text = f"[REVIEW NEEDED] {skip_reason}"
+            elif style == "bold":
                 rPr.append(OxmlElement('w:b'))
 
             sz = OxmlElement('w:sz')
-            sz.set(qn('w:val'), '18')  # 9pt for body text
+            sz.set(qn('w:val'), '18')
             rPr.append(sz)
 
             color = OxmlElement('w:color')
@@ -349,8 +374,25 @@ class JsonSapRenderer:
 
     def _fix_cover_page_colors(self, doc):
         """Remove blue color from cover page placeholder text."""
-        for p in doc.paragraphs[:30]:  # Cover page is in first ~30 paragraphs
+        for p in doc.paragraphs[:30]:
             for run in p.runs:
                 if run.font.color and run.font.color.rgb:
                     if str(run.font.color.rgb) == '0000FF':
-                        run.font.color.rgb = RGBColor(0, 0, 0)  # Set to black
+                        run.font.color.rgb = RGBColor(0, 0, 0)
+
+    def _remove_instruction_boxes(self, doc):
+        """Remove gray instruction boxes (tables with 'Instruction' in first cell)."""
+        tables_to_remove = []
+        for table in doc.tables:
+            try:
+                first_cell = table.rows[0].cells[0].text.strip()
+                if first_cell.startswith("Instruction") or first_cell.startswith("Overall Instruction"):
+                    tables_to_remove.append(table)
+            except (IndexError, AttributeError):
+                continue
+
+        for table in tables_to_remove:
+            table._element.getparent().remove(table._element)
+
+        if tables_to_remove:
+            print(f"  Removed {len(tables_to_remove)} instruction boxes from template")

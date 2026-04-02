@@ -33,6 +33,12 @@ def system_message(protocol_text: str) -> str:
         "- For lists, use plain numbered lists (1. 2. 3.) or lettered lists (a. b. c.).\n"
         "- Do NOT repeat the section title — go straight to the content.\n"
         "- Write as if composing a formal Word document, not a markdown file.\n\n"
+        "CONTENT COMPLETENESS RULES:\n"
+        "- If the protocol contains relevant information for the requested section, you MUST include it.\n"
+        "- If the protocol does NOT contain sufficient information for the requested section, "
+        "respond with exactly: [SKIP: (brief reason)] — e.g., [SKIP: Protocol does not specify interim analysis plans]\n"
+        "- Do NOT fabricate, hallucinate, or guess information not present in the protocol.\n"
+        "- It is better to output [SKIP: reason] than to write speculative content.\n\n"
         f"The protocol is:\n\n{protocol_text}"
     )
 

@@ -38,6 +38,12 @@ def json_system_message(context: str) -> str:
         "- Follow ICH E9(R1) estimand framework where applicable.\n"
         "- Write in English unless instructed otherwise.\n"
         "- Use terminology consistent with CDISC standards (SDTM/ADaM) where appropriate.\n\n"
+        "CONTENT COMPLETENESS RULES:\n"
+        "- If the protocol contains relevant information, you MUST include it.\n"
+        "- If the protocol does NOT contain sufficient information for a requested item, "
+        "use this exact paragraph: {\"text\": \"[SKIP: brief reason]\", \"style\": \"body\"}\n"
+        "- Do NOT fabricate or guess information not present in the protocol.\n"
+        "- It is better to output a SKIP marker than speculative content.\n\n"
         "OUTPUT FORMAT — You MUST respond with valid JSON only:\n"
         '{\n'
         '  "paragraphs": [\n'
