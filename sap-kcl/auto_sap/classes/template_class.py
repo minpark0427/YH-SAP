@@ -61,7 +61,7 @@ class Template:
         else:
             return OpenAIChatAsync
 
-    async def get_sap_content_async(self, protocol_text, model="claude-sonnet-4-5-20250929", backend=None):
+    async def get_sap_content_async(self, protocol_text, model="claude-sonnet-4-6-20250514", backend=None):
         backend = backend or self.backend
 
         segmenter = ProtocolSegmenter(protocol_text)
@@ -128,7 +128,7 @@ class Template:
             {"template_prompt_version": f"{self.template_name} with prompts {self.prompts_name}"}
         )
 
-    def get_sap_content(self, protocol_text, model="claude-sonnet-4-5-20250929", backend=None):
+    def get_sap_content(self, protocol_text, model="claude-sonnet-4-6-20250514", backend=None):
         asyncio.run(self.get_sap_content_async(protocol_text, model, backend))
 
     def save_content_as_text(self, path):
@@ -166,7 +166,7 @@ class Template:
         total_time = round(t1 - t0)
         print(f"SAP written in {total_time} seconds")
 
-    def get_autocode_json(self, output_path=None, model="claude-sonnet-4-5-20250929", backend=None):
+    def get_autocode_json(self, output_path=None, model="claude-sonnet-4-6-20250514", backend=None):
         backend = backend or self.backend
         if getattr(self, "sap_content", None) is not None:
             if backend == "claudecode":

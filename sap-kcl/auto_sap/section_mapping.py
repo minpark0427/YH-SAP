@@ -15,6 +15,10 @@ GLOBAL_CONTEXT_SECTIONS: list[str] = ["1.1"]
 # SAP tag → relevant protocol sections
 # Each prompt's information needs are traced from prompts_yuhan_v1.py
 SAP_TO_PROTOCOL_MAP: dict[str, list[str]] = {
+    # Section 1: Abbreviations
+    # Needs: entire protocol to extract all abbreviations used
+    "abbreviations": ["1.1", "4", "9", "10"],
+
     # Section 2: Introduction
     # Needs: background, study design, treatment arms, duration
     "introduction": ["3", "5.1", "5.2"],
@@ -49,10 +53,23 @@ SAP_TO_PROTOCOL_MAP: dict[str, list[str]] = {
     "medical_history": ["6", "9.1"],
     "concomitant_medication": ["7.8", "9.1"],
 
-    # Section 9: Efficacy Analysis — needs objectives, endpoints, statistical methods
+    # General Considerations for Data Summarization
+    "general_considerations": ["5.1", "10"],
+
+    # Special Screening Tests (Phase 1)
+    "special_tests": ["6.2", "6.3", "9.1", "9.3"],
+
+    # Section 9: Efficacy / PK / PD Analysis — needs objectives, endpoints, statistical methods
     "primary_efficacy": ["4", "5.1", "9.2", "9.5", "10"],
     "secondary_efficacy": ["4", "5.1", "9.2", "9.5", "10"],
     "additional_efficacy": ["4", "9.2", "9.5", "9.6", "10.4", "10.5"],
+
+    # Preliminary Analyses (Phase 1 — SRC dose escalation support)
+    "preliminary_pk": ["7.3", "9.5", "10.3"],
+    "preliminary_pd": ["9.6", "10.4"],
+
+    # Blinded Analyses
+    "blinded_analyses": ["7.3.2", "7.6.3", "10.7"],
 
     # Section 10: Safety Analysis
     # Needs: AE definitions, safety assessments, statistical methods for safety
@@ -101,6 +118,9 @@ SAP_TO_PROTOCOL_MAP: dict[str, list[str]] = {
     # Subgroup Analysis (added in Phase 4)
     # Needs: population, objectives, statistical considerations
     "subgroup_analysis": ["6", "10"],
+
+    # References
+    "references": ["10"],
 
     # Section 15: Changes to Protocol Analysis
     "protocol_changes": ["10.9"],

@@ -27,11 +27,17 @@ from importlib.resources import files
 #   "high"    — statistical reasoning (efficacy models, estimands)
 # ---------------------------------------------------------------------------
 prompt_tasks = [
+    # Section 1: Abbreviations
+    PromptRegister("abbreviations", "low", "low"),
+
     # Section 2: Introduction
     PromptRegister("introduction", "medium", "low"),
 
     # Section 3: Objectives
     PromptRegister("objectives", "low", "low"),
+
+    # General Considerations for Data Summarization
+    PromptRegister("general_considerations", "medium", "low"),
 
     # Section 4: Analysis Sets
     PromptRegister("screened_set", "minimal", "low"),
@@ -54,10 +60,20 @@ prompt_tasks = [
     PromptRegister("medical_history", "minimal", "low"),
     PromptRegister("concomitant_medication", "low", "low"),
 
-    # Section 9: Efficacy Analysis — HIGH reasoning
+    # Special Screening Tests (Phase 1 specific)
+    PromptRegister("special_tests", "low", "low"),
+
+    # Section 9: Efficacy / PK / PD Analysis — HIGH reasoning
     PromptRegister("primary_efficacy", "high", "low"),
     PromptRegister("secondary_efficacy", "high", "low"),
     PromptRegister("additional_efficacy", "medium", "low"),
+
+    # Preliminary Analyses (Phase 1 specific)
+    PromptRegister("preliminary_pk", "medium", "low"),
+    PromptRegister("preliminary_pd", "medium", "low"),
+
+    # Blinded Analyses
+    PromptRegister("blinded_analyses", "low", "low"),
 
     # Section 10: Safety Analysis
     PromptRegister("adverse_events", "medium", "low"),
@@ -100,6 +116,9 @@ prompt_tasks = [
 
     # Subgroup Analysis (added in Phase 4 — gap analysis)
     PromptRegister("subgroup_analysis", "low", "low"),
+
+    # References
+    PromptRegister("references", "low", "low"),
 
     # Section 15: Changes to Protocol Analysis
     PromptRegister("protocol_changes", "low", "low"),

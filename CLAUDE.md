@@ -71,6 +71,8 @@ YH-SAP/
 - [x] GAP analysis: plan vs SAP template vs human-written SAP
 - [x] PK/PD prompt generalization — Phase 1 studies now generate PK/PD analysis instead of "Not applicable"
 - [x] Added 3 new tags: protocol_deviation, baseline_definition, subgroup_analysis (36→39 tags)
+- [x] Added 7 more tags: abbreviations, general_considerations, special_tests, preliminary_pk, preliminary_pd, blinded_analyses, references (39→46 tags)
+- [x] Default model updated to claude-sonnet-4-6
 
 ## What Still Needs To Be Done
 
@@ -101,12 +103,14 @@ YH-SAP/
 - Template uses `docxtpl` (Jinja2 in docx), not `python-docx` directly
 - **Regenerate template**: `python scripts/create_yuhan_template.py` (reads original docx, inserts tags, saves to templates/)
 
-## Yuhan SAP Template Tags (39 total)
+## Yuhan SAP Template Tags (46 total)
 
 | # | Section | Tag | reasoning_effort |
 |---|---------|-----|-----------------|
+| 1 | Abbreviations | `abbreviations` | low |
 | 2 | Introduction | `introduction` | medium |
 | 3 | Objectives | `objectives` | low |
+| — | General Considerations | `general_considerations` | medium |
 | 4.1 | Screened Set | `screened_set` | minimal |
 | 4.2 | Randomized Set | `randomized_set` | minimal |
 | 4.3 | Safety Set | `safety_set` | minimal |
@@ -118,9 +122,13 @@ YH-SAP/
 | 7.2 | Treatment Compliance | `treatment_compliance` | low |
 | 8.1 | Medical History | `medical_history` | minimal |
 | 8.2 | Concomitant Medication | `concomitant_medication` | low |
+| — | Special Screening Tests | `special_tests` | low |
 | 9.1 | Primary Analysis (Efficacy/PK) | `primary_efficacy` | **high** |
 | 9.2 | Secondary Analysis (Efficacy/PD) | `secondary_efficacy` | **high** |
 | 9.3 | Additional/Exploratory Analysis | `additional_efficacy` | medium |
+| — | Preliminary PK Analyses | `preliminary_pk` | medium |
+| — | Preliminary PD Analyses | `preliminary_pd` | medium |
+| — | Blinded Analyses | `blinded_analyses` | low |
 | 10.1 | Adverse Events | `adverse_events` | medium |
 | 10.2 | Lab Parameters | `lab_parameters` | low |
 | 10.3 | Vital Signs | `vital_signs` | low |
@@ -143,4 +151,5 @@ YH-SAP/
 | — | Protocol Deviation | `protocol_deviation` | low |
 | — | Baseline Definition | `baseline_definition` | low |
 | — | Subgroup Analysis | `subgroup_analysis` | low |
+| — | References | `references` | low |
 | 15 | Protocol Changes | `protocol_changes` | low |

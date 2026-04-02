@@ -41,6 +41,30 @@ def system_message(protocol_text: str) -> str:
 # Prompt dictionary — keys must match PromptRegister.variable values
 # ---------------------------------------------------------------------------
 
+# Section 1: List of Abbreviations (auto-generated)
+PROMPTS_ABBREVIATIONS = {
+    "abbreviations": """
+Generate a List of Abbreviations for this SAP based on the protocol.
+
+Extract all abbreviations and acronyms used in the protocol and their definitions.
+Common clinical trial abbreviations to include (if applicable):
+AE (adverse event), AUC (area under the curve), BMI (body mass index), CI (confidence interval),
+Cmax (maximum observed concentration), CRF/eCRF (case report form), CTCAE (Common Terminology Criteria for Adverse Events),
+ECG (electrocardiogram), FAS (full analysis set), GCP (Good Clinical Practice),
+ICH (International Council for Harmonisation), IP (investigational product),
+ITT (intent-to-treat), MedDRA (Medical Dictionary for Regulatory Activities),
+PD (pharmacodynamics), PK (pharmacokinetics), PPS (per-protocol set),
+SAE (serious adverse event), SAP (statistical analysis plan), SD (standard deviation),
+SOC (system organ class), PT (preferred term), SRC (Safety Review Committee),
+TEAE (treatment-emergent adverse event), WHO (World Health Organization).
+
+Add any study-specific abbreviations found in the protocol.
+Present as a two-column list: Abbreviation followed by Definition, one per line.
+Sort alphabetically by abbreviation.
+Do not include abbreviations not relevant to this study.
+""",
+}
+
 # Section 2: Introduction
 PROMPTS_INTRODUCTION = {
     "introduction": """
@@ -259,6 +283,98 @@ Include:
 
 If the protocol does not specify additional parameters, state: "No additional analysis parameters are specified in the protocol."
 
+Write concisely. Do not invent information not present in the protocol.
+""",
+}
+
+# General Considerations for Data Summarization
+PROMPTS_GENERAL = {
+    "general_considerations": """
+Write the General Considerations for Data Summarization and Analysis section for the SAP.
+
+Describe the general rules that apply across all analyses:
+- Continuous variables will be summarized using N, mean, standard deviation (SD), median, minimum, and maximum (and geometric mean/CV% for PK parameters if applicable).
+- Categorical variables will be summarized using frequency counts and percentages.
+- Percentages will be calculated based on the number of subjects in the relevant analysis set.
+- State the significance level for all statistical tests (e.g., two-sided alpha = 0.05) unless otherwise specified.
+- State that no formal hypothesis testing is planned if this is an exploratory/Phase 1 study.
+- Describe the treatment group labeling convention.
+- Note that all analyses will be performed by treatment group and, where appropriate, by study part (e.g., Part A SAD, Part B MAD).
+
+Write in full paragraphs. Be concise.
+Do not invent information not present in the protocol.
+""",
+}
+
+# Special Tests (Phase 1 specific: breathalyzer, hepatitis/HIV, syphilis, drug screen)
+PROMPTS_SPECIAL_TESTS = {
+    "special_tests": """
+Write the Special Screening Tests section for the SAP.
+
+This section covers protocol-required screening tests that are not standard safety or efficacy parameters. Based on the protocol, describe how the following will be summarized (include only those specified in the protocol):
+
+1. Breathalyzer/Alcohol Screen Test: how results will be listed or summarized.
+2. Hepatitis and HIV Tests: how screening results (HBsAg, anti-HBs, anti-HBc, anti-HCV, HIV antibody) will be listed.
+3. Syphilis Reagin Test: how results will be listed if applicable.
+4. Urine Drug Screening Test: how results will be listed or summarized.
+
+For each applicable test:
+- State that results will be presented as a listing by subject and treatment group.
+- Subjects with positive results at screening are typically excluded per protocol.
+
+If any of these tests are not specified in the protocol, omit them.
+Write concisely. Do not invent tests not present in the protocol.
+""",
+}
+
+# Preliminary PK Analyses (Phase 1 specific)
+PROMPTS_PRELIMINARY = {
+    "preliminary_pk": """
+Write the Preliminary PK Analyses section for the SAP.
+
+This section describes analyses performed during the study to support dose escalation decisions by the Safety Review Committee (SRC).
+
+Include:
+- State that preliminary PK analyses will be conducted after each cohort to support SRC dose escalation decisions.
+- Describe which PK parameters will be estimated for preliminary analysis (e.g., Cmax, AUClast, Tmax, t1/2).
+- State the analysis population (e.g., PK Analysis Set for subjects in the completed cohort).
+- Describe how preliminary results will be presented (e.g., descriptive statistics by dose group, individual concentration-time profiles, mean concentration-time plots).
+- Note that preliminary analyses may use unvalidated data and will be finalized in the final PK analysis.
+
+If the protocol does not describe preliminary PK analyses, state: "No preliminary PK analyses are planned."
+Write concisely. Do not invent information not present in the protocol.
+""",
+
+    "preliminary_pd": """
+Write the Preliminary PD Analyses section for the SAP.
+
+This section describes preliminary pharmacodynamic analyses performed during the study.
+
+Include:
+- State whether preliminary PD analyses are planned to support dose escalation or study conduct decisions.
+- Describe which PD biomarkers will be assessed (e.g., GL1, gangliosides, other glycosphingolipid pathway metabolites).
+- State the analysis population.
+- Describe how preliminary PD results will be presented (e.g., individual PD profiles, mean change from baseline by dose group).
+- Note that these are preliminary and may use unvalidated data.
+
+If the protocol does not describe preliminary PD analyses, state: "No preliminary PD analyses are planned."
+Write concisely. Do not invent information not present in the protocol.
+""",
+}
+
+# Blinded Analyses (Phase 1 specific)
+PROMPTS_BLINDED = {
+    "blinded_analyses": """
+Write the Blinded Analyses section for the SAP.
+
+Describe any analyses that will be performed while the study remains blinded:
+
+- State whether any blinded analyses are planned during the conduct of the study.
+- If the SRC reviews unblinded data, describe who has access and what safeguards maintain overall study blinding.
+- Describe any blinded safety monitoring procedures.
+- If applicable, state that the biostatistician preparing SRC reports will not be involved in the final unblinded analysis.
+
+If no blinded analyses are specified, state: "No specific blinded analysis procedures are defined beyond standard SRC review processes."
 Write concisely. Do not invent information not present in the protocol.
 """,
 }
@@ -558,6 +674,25 @@ Write concisely. Do not invent information not present in the protocol.
 """,
 }
 
+# References
+PROMPTS_REFERENCES = {
+    "references": """
+Write the Reference List section for the SAP.
+
+List the key references cited in or relevant to this SAP. Standard references typically include:
+1. The study protocol (with protocol number and version).
+2. ICH E9 "Statistical Principles for Clinical Trials" (1998).
+3. ICH E9(R1) "Addendum on Estimands and Sensitivity Analysis" (2019), if applicable.
+4. CTCAE version used for AE severity grading (extract version from protocol).
+5. MedDRA version used for AE coding (extract version from protocol if stated).
+6. WHO Drug Dictionary version used for medication coding (if stated).
+7. Any statistical methodology references cited in the protocol (e.g., dose proportionality methods, PK analysis guidelines).
+
+Extract specific version numbers from the protocol where available.
+Present as a numbered list. Do not include references not relevant to this study.
+""",
+}
+
 # Section 15: Changes to Protocol Analysis
 PROMPTS_CHANGES = {
     "protocol_changes": """
@@ -584,14 +719,19 @@ Do not invent information not present in the protocol.
 # ---------------------------------------------------------------------------
 PROMPTS_DICTIONARY: dict[str, str] = {}
 for _d in [
+    PROMPTS_ABBREVIATIONS,
     PROMPTS_INTRODUCTION,
     PROMPTS_OBJECTIVES,
+    PROMPTS_GENERAL,
     PROMPTS_ANALYSIS_SETS,
     PROMPTS_DISPOSITION,
     PROMPTS_DEMOGRAPHICS,
+    PROMPTS_SPECIAL_TESTS,
     PROMPTS_EXPOSURE,
     PROMPTS_MEDICAL,
     PROMPTS_EFFICACY,
+    PROMPTS_PRELIMINARY,
+    PROMPTS_BLINDED,
     PROMPTS_SAFETY,
     PROMPTS_INTERIM,
     PROMPTS_DMC,
@@ -602,6 +742,7 @@ for _d in [
     PROMPTS_PROTOCOL_DEVIATION,
     PROMPTS_BASELINE,
     PROMPTS_SUBGROUP,
+    PROMPTS_REFERENCES,
     PROMPTS_CHANGES,
 ]:
     PROMPTS_DICTIONARY.update(_d)

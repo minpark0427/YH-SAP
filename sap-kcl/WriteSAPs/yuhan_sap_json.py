@@ -131,8 +131,8 @@ def main():
         model = "claude-haiku-4-5-20251001"
         print(f"Test mode: using {model}")
     else:
-        model = "claude-opus-4-6"
-        print(f"Production mode: using {model}")
+        model = "claude-sonnet-4-6-20250514"
+        print(f"Production mode: using {model} (use --model claude-opus-4-6 for highest quality)")
 
     t0 = time.time()
 
